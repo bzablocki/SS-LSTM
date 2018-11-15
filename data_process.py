@@ -1,14 +1,14 @@
 import os
 import numpy as np
-from occupancy_map import get_distance_map, get_grid_map
+#from occupancy_map import get_distance_map, get_grid_map
 
 
 class DataProcesser:
 
-    def __init__(self, data_dir, observed_frame_num, predicting_frame_num, dup_threshold):
+    def __init__(self, data_dir, observed_frame_num, predicting_frame_num):#, dup_threshold):
         self.data_dir = data_dir
         self.file_path = os.path.join(self.data_dir, 'pixel_pos.csv')
-        self.dup_threshold = dup_threshold
+        #self.dup_threshold = dup_threshold
         self.raw_data = None
         self.ped_num = None
         self.traj_data = []
@@ -25,6 +25,9 @@ class DataProcesser:
         print('Creating Raw Data from CSV file...')
         self.raw_data = np.genfromtxt(self.file_path, delimiter=',')
         self.ped_num = np.size(np.unique(self.raw_data[1, :]))
+        print('didascalia')
+        print(np.size(self.raw_data[1, :]))
+        print(self.ped_num)
 
     def get_traj(self):
         """
@@ -39,8 +42,8 @@ class DataProcesser:
                     traj.append([self.raw_data[1][i], self.raw_data[0][i], self.raw_data[-1][i], self.raw_data[-2][i]])
             traj = np.reshape(traj, [-1, 4])
 
-            if self.traj_filter(traj, dup_threshold=self.dup_threshold):
-                self.traj_data.append(traj)
+            #if self.traj_filter(traj, dup_threshold=self.dup_threshold):
+            self.traj_data.append(traj)
 
         return self.traj_data
 

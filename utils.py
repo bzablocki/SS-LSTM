@@ -7,10 +7,12 @@ Created on Mon Jul 31 15:50:59 2017
 import numpy as np
 import os
 import math
-
+from scipy.spatial import distance
+import heapq
 from occupancy import get_rectangular_occupancy_map
-from occupancy import NYGC_rectangular_occupancy_map
+#from occupancy import NYGC_rectangular_occupancy_map
 from occupancy import get_circle_occupancy_map, log_circle_occupancy_map
+import keras
 
 
 # NYGC processing
@@ -215,4 +217,49 @@ def log_group_model_input(obs, observed_frame_num, neighborhood_size, dimensions
     group_model_input = np.reshape(group_model_input, [len(group_model_input), observed_frame_num, -1])
 
     return group_model_input
+
+
+def calculate_FDE(test_label, predicted_output, test_num, show_num):
+    total_FDE = np.zeros((test_num, 1))
+    for i in range(test_num):
+        predicted_result_temp = predicted_output[i]
+        label_temp = test_label[i]
+        total_FDE[i] = distance.euclidean(predicted_result_temp[-1], label_temp[-1])
+
+    show_FDE = heapq.nsmallest(show_num, total_FDE)
+
+    show_FDE = np.reshape(show_FDE, [show_num, 1])
+
+    return np.average(show_FDE)
+
+
+def calculate_ADE(test_label, predicted_output, test_num, predicting_frame_num, show_num):
+    total_ADE = np.zeros((test_num, 1))
+    for i in range(test_num):
+        predicted_result_temp = predicted_output[i]
+        label_temp = test_label[i]
+        ADE_temp = 0.0
+        for j in range(predicting_frame_num):
+            ADE_temp += distance.euclidean(predicted_result_temp[j], label_temp[j])
+        ADE_temp = ADE_temp / predicting_frame_num
+        total_ADE[i] = ADE_temp
+
+    show_ADE = heapq.nsmallest(show_num, total_ADE)
+
+    show_ADE = np.reshape(show_ADE, [show_num, 1])
+
+    return np.average(show_ADE)
+
+class EarlyStopping(keras.callbacks.EarlyStopping):
+	"""
+	Implements Keras EarlyStopping setting the start epoch of the callback
+    """
+	def __init__(self, monitor='val_loss',
+			 min_delta=0, patience=0, verbose=0, mode='auto', start_epoch = 1): # add argument for starting epoch
+		super(EarlyStopping, self).__init__()
+		self.start_epoch = start_epoch
+
+	def on_epoch_end(self, epoch, logs=None):
+		if epoch > self.start_epoch:
+			super().on_epoch_end(epoch, logs)
 
