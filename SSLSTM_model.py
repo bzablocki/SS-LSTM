@@ -35,6 +35,9 @@ def Scene_CNN():
     img_shape = (img_height, img_width, img_channels)
     
     model = Sequential()
+    #model.add(Input(shape=img_shape))
+    #model.add(BatchNormalization(momentum=0.8))
+    #model.add(Conv2D(96, kernel_size=11, strides=4, padding="same"))
     model.add(Conv2D(96, kernel_size=11, strides=4, input_shape=img_shape, padding="same"))
     model.add(MaxPooling2D(pool_size=(3, 3), strides=2))
     model.add(BatchNormalization(momentum=0.8))

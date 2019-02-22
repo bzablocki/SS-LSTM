@@ -12,7 +12,6 @@ import data_process as dp
 from matplotlib import pyplot as plt
 import keras
 
-
 observed_frame_num = 8
 predicting_frame_num = 12
 
@@ -85,7 +84,10 @@ def load_data(leave_dataset_index = 1, map_index = 1):
         
         np.save('./data/obs_1.npy', obs_1)
         np.save('./data/pred_1.npy', pred_1)
-        np.save('./data/img_1.npy', img_1)
+        #np.save('./data/img_1.npy', img_1)
+
+    #img_1 = check.heatmap
+    #img_1 = np.array([img_1,]*len(obs_1))
 
     person_input_1 = person_model_input(obs_1, observed_frame_num)
     expected_ouput_1 = model_expected_ouput(pred_1, predicting_frame_num)
@@ -110,14 +112,17 @@ def load_data(leave_dataset_index = 1, map_index = 1):
 
         np.save('./data/obs_2.npy', obs_2)
         np.save('./data/pred_2.npy', pred_2)
-        np.save('./data/img_2.npy', img_2)
+        #np.save('./data/img_2.npy', img_2)
+
+    #img_2 = check.heatmap
+    #img_2 = np.array([img_2,]*len(obs_2))
 
     person_input_2 = person_model_input(obs_2, observed_frame_num)
     expected_ouput_2 = model_expected_ouput(pred_2, predicting_frame_num)
-    group_log_2 = log_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2, neighborhood_radius,
+    group_log_2 = log_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1, neighborhood_radius,
                                         grid_radius, grid_angle, circle_map_weights, raw_data_2)
-    group_grid_2 = group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2, grid_size, raw_data_2)
-    group_circle_2 = circle_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2,
+    group_grid_2 = group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1, grid_size, raw_data_2)
+    group_circle_2 = circle_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1,
                                             neighborhood_radius, grid_radius, grid_angle, circle_map_weights, raw_data_2)
 
     # data_dir_3
@@ -135,7 +140,11 @@ def load_data(leave_dataset_index = 1, map_index = 1):
 
         np.save('./data/obs_3.npy', obs_3)
         np.save('./data/pred_3.npy', pred_3)
-        np.save('./data/img_3.npy', img_3)
+        #np.save('./data/img_3.npy', img_3)
+
+    
+    #img_3 = check.heatmap
+    #img_3 = np.array([img_3,]*len(obs_3))
 
     person_input_3 = person_model_input(obs_3, observed_frame_num)
     expected_ouput_3 = model_expected_ouput(pred_3, predicting_frame_num)
@@ -160,7 +169,10 @@ def load_data(leave_dataset_index = 1, map_index = 1):
 
         np.save('./data/obs_4.npy', obs_4)
         np.save('./data/pred_4.npy', pred_4)
-        np.save('./data/img_4.npy', img_4)
+        #np.save('./data/img_4.npy', img_4)
+    
+    #img_4 = check.heatmap
+    #img_4 = np.array([img_4,]*len(obs_4))
 
     person_input_4 = person_model_input(obs_4, observed_frame_num)
     expected_ouput_4 = model_expected_ouput(pred_4, predicting_frame_num)
@@ -185,7 +197,11 @@ def load_data(leave_dataset_index = 1, map_index = 1):
 
         np.save('./data/obs_5.npy', obs_5)
         np.save('./data/pred_5.npy', pred_5)
-        np.save('./data/img_5.npy', img_5)
+        #np.save('./data/img_5.npy', img_5)
+
+    
+    #img_5 = check.heatmap
+    #img_5 = np.array([img_5,]*len(obs_5))
 
     person_input_5 = person_model_input(obs_5, observed_frame_num)
     expected_ouput_5 = model_expected_ouput(pred_5, predicting_frame_num)
@@ -194,6 +210,7 @@ def load_data(leave_dataset_index = 1, map_index = 1):
     group_grid_5 = group_model_input(obs_5, observed_frame_num, neighborhood_size, dimensions_1, grid_size, raw_data_5)
     group_circle_5 = circle_group_model_input(obs_5, observed_frame_num, neighborhood_size, dimensions_1,
                                             neighborhood_radius, grid_radius, grid_angle, circle_map_weights, raw_data_5)
+
 
     if map_index == 1:
         group_input_1 = group_grid_1
@@ -232,7 +249,7 @@ def load_data(leave_dataset_index = 1, map_index = 1):
         expected_ouput = np.concatenate(
             (expected_ouput_1, expected_ouput_3, expected_ouput_4, expected_ouput_5))
         group_input = np.concatenate((group_input_1, group_input_3, group_input_4, group_input_5))
-        scene_input = np.concatenate((img_1, img_3, img_4, img_5, img_2))
+        scene_input = np.concatenate((img_1, img_3, img_4, img_5))
         test_input = [img_2, group_input_2, person_input_2]
         test_output = expected_ouput_2
 
@@ -291,6 +308,9 @@ def load_test_data(dataset_index = 1, map_index = 3):
         elif map_index == 3:
             group_input = group_log_1
 
+        #img_1 = check.heatmap
+        #img_1 = np.array([img_1,]*len(obs_1))
+
     elif dataset_index == 2:
         # data_dir_2
         raw_data_2, numPeds_2 = preprocess(data_dir_2)
@@ -302,10 +322,10 @@ def load_test_data(dataset_index = 1, map_index = 3):
         img_2 = all_image_tensor(frame_dir_2, data_str_2, obs_2, img_width_1, img_height_1)
         person_input_2 = person_model_input(obs_2, observed_frame_num)
         expected_ouput_2 = model_expected_ouput(pred_2, predicting_frame_num)
-        group_log_2 = log_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2, neighborhood_radius,
+        group_log_2 = log_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1, neighborhood_radius,
                                             grid_radius, grid_angle, circle_map_weights, raw_data_2)
-        group_grid_2 = group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2, grid_size, raw_data_2)
-        group_circle_2 = circle_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_2,
+        group_grid_2 = group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1, grid_size, raw_data_2)
+        group_circle_2 = circle_group_model_input(obs_2, observed_frame_num, neighborhood_size, dimensions_1,
                                                 neighborhood_radius, grid_radius, grid_angle, circle_map_weights, raw_data_2)
         obs = obs_2
 
@@ -315,6 +335,9 @@ def load_test_data(dataset_index = 1, map_index = 3):
             group_input = group_circle_2
         elif map_index == 3:
             group_input = group_log_2
+
+        #img_2 = check.heatmap
+        #img_2 = np.array([img_2,]*len(obs_2))
 
     elif dataset_index == 3:
         # data_dir_3
@@ -340,6 +363,9 @@ def load_test_data(dataset_index = 1, map_index = 3):
             group_input = group_circle_3
         elif map_index == 3:
             group_input = group_log_3
+
+        #img_3 = check.heatmap
+        #img_3 = np.array([img_3,]*len(obs_3))
    
     elif dataset_index == 4:
         # data_dir_4
@@ -366,6 +392,9 @@ def load_test_data(dataset_index = 1, map_index = 3):
         elif map_index == 3:
             group_input = group_log_4
 
+        #img_4 = check.heatmap
+        #img_4 = np.array([img_4,]*len(obs_4))
+
     elif dataset_index == 5:
         # data_dir_5
         raw_data_5, numPeds_5 = preprocess(data_dir_5)
@@ -390,6 +419,9 @@ def load_test_data(dataset_index = 1, map_index = 3):
             group_input = group_circle_5
         elif map_index == 3:
             group_input = group_log_5
+
+        #img_5 = check.heatmap
+        #img_5 = np.array([img_5,]*len(obs_5))
 
     #preparing test data   
     if dataset_index == 1:
@@ -418,46 +450,75 @@ def load_test_data(dataset_index = 1, map_index = 3):
     return test_input, expected_ouput, obs
 
 def print_test_data(predicted_output, expected_output, obs):
-    for i in range(12,13):
+    IDs = []
+
+    for i in range(len(obs)-1):
         img_ID = int(obs[i][-1][1])
         img_ID_start =  img_ID - 70
-        img_ID_current = img_ID_start
+        #img_ID_current = img_ID_start
+        img_ID_current = img_ID_start + 80 
 
-        while img_ID_current < img_ID_start + 80:
-            image = image_tensor(frame_dir_1,data_str_1,img_ID_current)
-            #image = cv2.imread(image, cv2.IMREAD_COLOR)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # while img_ID_current < img_ID_start + 80:
+        #     image = image_tensor(frame_dir_1,data_str_1,img_ID_current)
+        #     #image = cv2.imread(image, cv2.IMREAD_COLOR)
+        #     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            plt.close()
-            plt.figure(figsize=(20,12))
-            plt.imshow(image)
+        #     plt.close()
+        #     plt.figure(figsize=(20,12))
+        #     plt.imshow(image)
 
-            current_axis = plt.gca()
-            plt.axis('off')
-            filename = 'image_' + str(img_ID_current) + '.png' #'\\' on windows
-            plt.savefig(path.join('./data', 'video', filename), bbox_inches='tight',transparent=True, pad_inches=0)
+        #     current_axis = plt.gca()
+        #     plt.axis('off')
+        #     filename = 'image_' + str(img_ID_current) + '.png' #'\\' on windows
+        #     plt.savefig(path.join('./data', 'video', filename), bbox_inches='tight',transparent=True, pad_inches=0)
             
-            img_ID_current += 1
+        #     img_ID_current += 1
 
-        while img_ID_current < img_ID_start + 200:
-            image = image_tensor(frame_dir_1, data_str_1, img_ID_current)
-            #image = cv2.imread(image, cv2.IMREAD_COLOR)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        while img_ID_current < img_ID_start + 90:  #200
+            
+
+            filename = 'image_' + str(img_ID_current) + '.png' #'\\' on windows
+            filepath = path.join('./data', 'video', filename)
+
+            if img_ID_current in IDs:
+                image = cv2.imread(filepath)
+                image = cv2.resize(image, (720, 576))
+            else:
+                IDs.append(img_ID_current)
+                image = image_tensor(frame_dir_1, data_str_1, img_ID_current)
+                #image = cv2.imread(image, cv2.IMREAD_COLOR)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             plt.close()
             plt.figure(figsize=(20,12))
             plt.imshow(image)
 
-            current_axis = plt.gca()
-            plt.axis('off')
+            #current_axis = plt.gca()
+            plt.gca()
+            #plt.axis('off')
+            # plt.subplots_adjust(top = 1, bottom = 0, right = 1, left = 0, hspace = 0, wspace = 0)
+            # plt.margins(0,0)
+            # plt.gca().xaxis.set_major_locator(plt.NullLocator())
+            # plt.gca().yaxis.set_major_locator(plt.NullLocator())
+                        
             X, Y, X1, Y1 = [], [], [], []
             
-            for j in range(11):
+            for j in range(12):
                 X.append(predicted_output[i][j][0]*img_width_1)
                 Y.append(predicted_output[i][j][1]*img_height_1)
+                #X = list(filter(lambda x : x >= 0 and x < img_width_1, X))
+                #Y = list(filter(lambda x : , Y))
+                Xt, Yt = [], [] 
+                for x,y in zip(X, Y):
+                    if x >= 0 and x < img_width_1 and y >= 0 and y < img_height_1:
+                        Xt.append(x)
+                        Yt.append(y)
 
-                X1.append(expected_output[i][j][0]*img_width_1)
-                Y1.append(expected_output[i][j][1]*img_height_1)
+                X = Xt[:]
+                Y = Yt[:]
+
+                #X1.append(expected_output[i][j][0]*img_width_1)
+                #Y1.append(expected_output[i][j][1]*img_height_1)
 
             #X.append(predicted_output[1][i][0]*img_width_1)
             #Y.append(predicted_output[1][i][1]*img_height_1)
@@ -468,17 +529,18 @@ def print_test_data(predicted_output, expected_output, obs):
             color = 'red'
 
             plt.plot(X, Y, color=color, linestyle='-', linewidth=4, markersize=4, marker='P', markerfacecolor='k')
-            plt.plot(X1, Y1, color='k', linestyle='-', linewidth=4, markersize=4, marker='P', markerfacecolor=color)
+            #plt.plot(X1, Y1, color='k', linestyle='-', linewidth=4, markersize=4, marker='P', markerfacecolor=color)
             count = 0
             for x, y in zip(X, Y):
                 plt.text(x, y, str(count), color="blue", fontsize=12)
                 count += 1
             count = 0
-            for x, y in zip(X1, Y1):
-                plt.text(x, y, str(count), color="blue", fontsize=12)
-                count += 1
+            # for x, y in zip(X1, Y1):
+            #     plt.text(x, y, str(count), color="blue", fontsize=12)
+            #     count += 1
             filename = 'image_' + str(img_ID_current) + '.png' #'\\' on windows
-            plt.savefig(path.join('./data', 'video', filename), bbox_inches='tight',transparent=True, pad_inches=0)
+            #plt.savefig(path.join('./data', 'video', filename), bbox_inches='tight',transparent=True, pad_inches=0)
+            save(path.join('./data', 'video', filename))
             img_ID_current += 1
 
 class DataGenerator(keras.utils.Sequence):
@@ -536,3 +598,19 @@ class DataGenerator(keras.utils.Sequence):
         #out2 = out2.reshape(20, 1, 2)
        
         return [scene_input, group_input, person_input], output
+
+def save(filepath, fig=None):
+    '''Save the current image with no whitespace
+    Example filepath: "myfig.png" or r"C:\myfig.pdf" 
+    '''
+    #import matplotlib.pyplot as plt
+    if not fig:
+        fig = plt.gcf()
+
+    plt.subplots_adjust(0,0,1,1,0,0)
+    for ax in fig.axes:
+        ax.axis('off')
+        ax.margins(0,0)
+        ax.xaxis.set_major_locator(plt.NullLocator())
+        ax.yaxis.set_major_locator(plt.NullLocator())
+    fig.savefig(filepath, pad_inches = 0, bbox_inches='tight')

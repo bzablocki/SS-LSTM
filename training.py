@@ -11,7 +11,7 @@ from SSLSTM_model import EnsembleModel
 from load_data import load_data, DataGenerator
 from keras import backend as K
 from utils import EarlyStopping
-
+#####deefrefrrrggg
 def loss(y_true, y_pred):
     print('##############################')
     print(y_pred[2])
@@ -35,12 +35,17 @@ if __name__ == '__main__':
     batch_size = 20
     epochs = 1000
 
-    #Load Data
-    person_input, expected_output, group_input, scene_input, test_input, test_output = load_data()#[0:4]
+    leave_dataset_index = 3
+    map_index = 2
 
+    #Load Data
+    person_input, expected_output, group_input, scene_input, test_input, test_output = load_data(leave_dataset_index = leave_dataset_index, map_index = map_index)#[0:4]
+    print(len([scene_input, group_input, person_input][1]))
     #Set data generator
     train_generator = DataGenerator(data = [scene_input, group_input, person_input], labels = expected_output, batch_size = batch_size, shuffle = False)
     test_generator = DataGenerator(data = test_input, labels = test_output, batch_size = batch_size, shuffle = False)
+    print('####')
+    print(scene_input.shape)
 
     #Compile model
     model.compile(loss='mse', optimizer=opt)
@@ -52,7 +57,7 @@ if __name__ == '__main__':
     mcpCallback = ModelCheckpoint('sslstm_weights_checkpoint.h5', monitor='val_loss', save_weights_only=True, save_best_only=True, period=1)
 
     #Settig EarlyStoppingtCallback
-    esCallback = EarlyStopping(monitor='val_loss', min_delta=0, patience=5, start_epoch = 300)
+    esCallback = EarlyStopping(monitor='val_loss', min_delta=0, patience=20, start_epoch = 1000)
     
     #training
     

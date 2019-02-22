@@ -1,7 +1,7 @@
 import os
 import numpy as np
+import sys
 #from occupancy_map import get_distance_map, get_grid_map
-
 
 class DataProcesser:
 
@@ -11,15 +11,21 @@ class DataProcesser:
         #self.dup_threshold = dup_threshold
         self.raw_data = None
         self.ped_num = None
+        self.heatmap = None
         self.traj_data = []
         self.obs = []
+        self.obs2 = []
         self.pred = []
         self.obs_length = observed_frame_num
         self.pred_length = predicting_frame_num
+        self.img_width = 720
+        self.img_height = 576
 
         self.from_csv()
         self.get_traj()
         self.get_obs_pred()
+        self.get_obs_pred2()
+        self.createHM()
 
     def from_csv(self):
         print('Creating Raw Data from CSV file...')
@@ -44,7 +50,6 @@ class DataProcesser:
 
             #if self.traj_filter(traj, dup_threshold=self.dup_threshold):
             self.traj_data.append(traj)
-
         return self.traj_data
 
     def get_obs_pred(self):
@@ -121,6 +126,53 @@ class DataProcesser:
                                        [-1, self.obs_length, int(neighborhood_size / grid_size) ** 2])
 
         return grid_map_input
+
+
+    def get_obs_pred2(self):
+        """
+        get input observed data and output predicted data
+        """
+        count = 0
+
+        for pedIndex in range(len(self.traj_data)):
+
+            if len(self.traj_data[pedIndex]) >= self.obs_length:
+                obs_pedIndex = []
+
+                for i in range(len(self.traj_data[pedIndex])-8):
+                    obs_pedIndex = []
+                    count += 1
+                    for k in range(i, i+8):
+                        obs_pedIndex.append(self.traj_data[pedIndex][k])
+
+                    obs_pedIndex = np.reshape(obs_pedIndex, [self.obs_length, 4])
+
+                    self.obs2.append(obs_pedIndex)
+
+        self.obs2 = np.reshape(self.obs2, [count, self.obs_length, 4])
+
+        return self.obs2
+
+    def createHM(self):
+
+        cell_size = 60
+        height = int(self.img_height/cell_size)
+        width = int(self.img_width/cell_size)
+
+        self.heatmap = np.zeros(shape=(height, width, 1))
+
+        for i in range(len(self.raw_data[0])):
+
+            x = max(0, int(min(self.raw_data[-1][i], 1)*self.img_width-1))
+            y = max(0, int(min(self.raw_data[-2][i], 1)*self.img_height-1))
+
+            x = int(x/cell_size)
+            y = int(y/cell_size)
+
+            self.heatmap[y][x][0] += 1
+        print(self.heatmap)
+        
+
 
 
 
